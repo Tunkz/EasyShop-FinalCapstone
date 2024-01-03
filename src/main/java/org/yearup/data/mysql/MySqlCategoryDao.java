@@ -5,10 +5,7 @@ import org.yearup.data.CategoryDao;
 import org.yearup.models.Category;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,14 +36,14 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     @Override
     public Category getById(int categoryId) {
         // get category by id
-        try (Connection connection = getConnection()){
+        try (Connection connection = getConnection()) {
 
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT *FROM +" +
-                    "CATEGORIES where category_id = ?");
-            preparedStatement.setInt(1,categoryId);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " +
+                    "categories where category_id = ?");
+            preparedStatement.setInt(1, categoryId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 return mapRow(resultSet);
             }
         } catch (SQLException e) {
@@ -59,12 +56,19 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     @Override
     public Category create(Category category) {
         // create a new category
-        try (Connection connection  =getConnection()){
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO categories (name,description)+" +
-                    "VALUES (?, ?) ");
-            preparedStatement.setString(1,category.getName());
-            preparedStatement.setString(2,category.getDescription());
+        try (Connection connection = getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO categories (name,description)" +
+                    "VALUES (?, ?) ", Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, category.getName());
+            preparedStatement.setString(2, category.getDescription());
             preparedStatement.executeUpdate();
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int generatedId = generatedKeys.getInt(1);
+                    category.setCategoryId(generatedId);
+                }
+            }
+
 
             return category;
         } catch (SQLException e) {
@@ -75,27 +79,27 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     @Override
     public void update(int categoryId, Category category) {
         // update category
-       try (Connection connection = getConnection()){
+        try (Connection connection = getConnection()) {
 
-           PreparedStatement preparedStatement = connection.prepareStatement("UPDATE categories SET name = ?, description = ? +" +
-                   "WHERE category_id = ?");
-           preparedStatement.setString(1,category.getName());
-           preparedStatement.setString(2,category.getDescription());
-           preparedStatement.setInt(3,categoryId);
-           preparedStatement.executeUpdate();
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE categories SET name = ?, description = ? " +
+                    "WHERE category_id = ?");
+            preparedStatement.setString(1, category.getName());
+            preparedStatement.setString(2, category.getDescription());
+            preparedStatement.setInt(3, categoryId);
+            preparedStatement.executeUpdate();
 
-       } catch (SQLException e) {
-           throw new RuntimeException(e);
-       }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void delete(int categoryId) {
         // delete category
-        try (Connection connection = getConnection()){
+        try (Connection connection = getConnection()) {
 
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM categories WHERE categpry_id = ?");
-            preparedStatement.setInt(1,categoryId);
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM categories WHERE category_id = ?");
+            preparedStatement.setInt(1, categoryId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

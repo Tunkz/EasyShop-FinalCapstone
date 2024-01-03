@@ -35,7 +35,7 @@ public class CategoriesController {
 
     // add the appropriate annotation for a get action
     @GetMapping()
-    @PreAuthorize("permitAll")
+    @PreAuthorize("permitAll()")
     public List<Category> getAll() {
         // find and return all categories
 
@@ -43,21 +43,26 @@ public class CategoriesController {
     }
 
     // add the appropriate annotation for a get action
-    @GetMapping("{id}")
-    @PreAuthorize("permitAll")
-    public Category getById(@PathVariable int id) {
+    @GetMapping("{categoryId}")
+    @PreAuthorize("permitAll()")
+    public Category getById(@PathVariable int categoryId) {
         // get the category by id
         try {
-            Category category = categoryDao.getById(id);
-
-            if (category == null)
-                throw new ResponseStatusException(HttpStatus.MULTI_STATUS.NOT_FOUND);
-
-            return category;
+            var category = categoryDao.getById(categoryId);
+            if (category.getName() != null) {
+                return category;
+            }
+            //  return category;
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Wrong character...");
-        }
+            var category = categoryDao.getById(categoryId);
+            if (category == null)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            else {
 
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Wrong character...");
+            }
+        }
+        return null;
     }
 
     // the url to return all products in category 1 would look like this
@@ -85,7 +90,7 @@ public class CategoriesController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Category addCategory(@RequestBody Category category) {
-        // insert the category
+
         try {
             return categoryDao.create(category);
         } catch (Exception e) {
@@ -100,12 +105,11 @@ public class CategoriesController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateCategory(@PathVariable int id, @RequestBody Category category) {
         // update the category by id
-     try {
-         categoryDao.update(id, category);
-     }
-     catch (Exception e){
-         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
-     }
+        try {
+            categoryDao.update(id, category);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
 
     }
 
@@ -117,13 +121,9 @@ public class CategoriesController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable int id) {
         try {
-            var category = productDao.getById(id);
 
-            if (category == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             categoryDao.delete(id);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
