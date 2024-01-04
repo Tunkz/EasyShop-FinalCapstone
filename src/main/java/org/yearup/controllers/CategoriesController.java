@@ -47,22 +47,21 @@ public class CategoriesController {
     @PreAuthorize("permitAll()")
     public Category getById(@PathVariable int categoryId) {
         // get the category by id
-        try {
-            var category = categoryDao.getById(categoryId);
-            if (category.getName() != null) {
-                return category;
-            }
-            //  return category;
-        } catch (Exception e) {
-            var category = categoryDao.getById(categoryId);
-            if (category == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            else {
+        Category category = null;
 
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Wrong character...");
-            }
+        try {
+             category = categoryDao.getById(categoryId);
+
+
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
-        return null;
+
+        if (category == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        return category;
+
     }
 
     // the url to return all products in category 1 would look like this
