@@ -18,9 +18,13 @@ minutes from a mobile device or a laptop.
 
 ## Demo 📽g
 ![Capstone easyshopApplication .gif](..%2F..%2F..%2FGif%20animations%2FCapstone%20easyshopApplication%20.gif)
+
 This gif shows that our code has no bugs
+
 ![Capstone easyshopApplication.2.gif](..%2F..%2F..%2FGif%20animations%2FCapstone%20easyshopApplication.2.gif)
+
 This gif shows what the application is up and running
+
 ![img.png](img.png)
 
 This is one of the methods that we had to create to get the category of an item by its Id.
