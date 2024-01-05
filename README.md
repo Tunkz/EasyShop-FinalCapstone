@@ -17,11 +17,11 @@ minutes from a mobile device or a laptop.
 6.Spring Boot: Spring Boot is an open-source, microservice-based Java web framework offered by Spring, particularly useful for software engineers developing web apps and microservices. 
 
 ## Demo 📽g
-![Capstone easyshopApplication .gif](..%2F..%2F..%2FGif%20animations%2FCapstone%20easyshopApplication%20.gif)
+![Capstone-easyshopApplication.gif](gif-animation%2FCapstone-easyshopApplication.gif)
 
 This gif shows that our code has no bugs
 
-![Capstone easyshopApplication.2.gif](..%2F..%2F..%2FGif%20animations%2FCapstone%20easyshopApplication.2.gif)
+![Capstone-easyshopApplication-2.gif](gif-animation%2FCapstone-easyshopApplication-2.gif)
 
 This gif shows what the application is up and running
 
